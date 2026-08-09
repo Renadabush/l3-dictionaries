@@ -1,0 +1,58 @@
+
+(define dict (lambda (x) x))
+
+(define symbol?
+  (lambda (x)
+    (not (or (number? x) (boolean? x) (string? x)))))
+
+(define dict?
+  (lambda (d)
+    (if (eq? d '())
+        #t
+        (if (pair? d)
+            (if (pair? (car d))
+                (if (symbol? (car (car d)))
+                    (dict? (cdr d))
+                    #f)
+                #f)
+            #f))))
+
+
+
+(define make-error (lambda (v) (cons 'error (cons v '()))))
+
+(define is-error? 
+  (lambda (v) 
+    (if (pair? v) 
+        (if (eq? (car v) 'error) #t #f)
+        #f)))
+
+(define get 
+  (lambda (d k) 
+    (if (not (dict? d))
+        (make-error k)
+        (if (eq? d '())
+            (make-error k)
+            (if (eq? (car (car d)) k)
+                (cdr (car d))
+                (get (cdr d) k))))))
+
+
+(define bind 
+  (lambda (v f) 
+    (if (is-error? v) 
+        v 
+        (f v))))
+
+
+
+
+
+
+
+
+
+
+
+
+
